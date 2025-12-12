@@ -1,0 +1,10 @@
+# /docker/anchors.yaml
+x-defaults: &default-container
+  pull_policy: always
+  restart: unless-stopped
+  environment:
+    PUID: 1000
+    PGID: 1000
+    TZ: America/Chicago
+  networks:
+    - mediarr

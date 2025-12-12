@@ -1,0 +1,23 @@
+services:
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:develop
+    container_name: lidarr
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: America/Chicago
+    networks:
+      - mediarr
+    volumes:
+      - media-root:/data
+      - ./config:/config # Path adjusted
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/127.0.0.1/8686 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      qbittorrent:
+        condition: service_healthy

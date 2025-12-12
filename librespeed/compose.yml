@@ -1,0 +1,22 @@
+services:
+  librespeed:
+    image: lscr.io/linuxserver/librespeed:latest
+    container_name: librespeed
+    restart: unless-stopped
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: America/Chicago
+      DB_TYPE: mysql
+      DB_MYSQL_PORT: 3306
+      DB_HOSTNAME: "mariadb"
+      DB_NAME: "speedtest_db"
+      DB_USERNAME: "speed_user"
+      DB_PASSWORD: "ADD-YOUR-PASSWORD"
+      CUSTOM_RESULTS: true
+    volumes:
+      - ./config:/config # Path adjusted
+    networks:
+      - mediarr
+    depends_on:
+      - mariadb

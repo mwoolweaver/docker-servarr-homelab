@@ -1,0 +1,27 @@
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - 6881:6881/tcp
+      - 6881:6881/udp
+    volumes:
+      - torrents-data:/data/torrents
+      - ./config:/config # Path adjusted to ./config relative to this file location
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: America/Chicago
+      DOCKER_MODS: ghcr.io/vuetorrent/vuetorrent-lsio-mod
+    networks:
+      - mediarr
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/127.0.0.1/8080 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      watchtower:
+        condition: service_healthy

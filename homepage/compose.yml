@@ -1,0 +1,25 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config:/app/config # Path adjusted
+      # The next volume mount path is tricky; we need to reach the NPM config folder:
+      - ../nginx-proxy/config/letsencrypt:/app/config/nginx-proxy/letsencrypt:ro
+      - media-root:/data/media:ro
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: America/Chicago
+      HOMEPAGE_ALLOWED_HOSTS: "10.0.0.220:3000,localhost:3000,page.home.example.com"
+      LOG_LEVEL: debug
+    networks:
+      - mediarr
+      - npm-backend
+    depends_on:
+      mariadb:
+        condition: service_healthy

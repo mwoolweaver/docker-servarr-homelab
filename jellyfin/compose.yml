@@ -1,0 +1,29 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    pull_policy: always
+    restart: unless-stopped
+    volumes:
+      - media-library:/media
+      - ./config:/config # Path adjusted
+      - ./cache:/cache   # Path adjusted (assuming you have a /cache dir in /docker/jellyfin)
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - "105"
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: America/Chicago
+    networks:
+      - mediarr
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/127.0.0.1/8096 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 4
+      start_period: 15s
+    depends_on:
+      prowlarr:
+        condition: service_healthy

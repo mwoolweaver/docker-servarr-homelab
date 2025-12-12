@@ -1,0 +1,51 @@
+# /docker/compose.yaml
+
+# --- INCLUDES ---
+# 1. Include shared anchors file first to make anchors available globally
+# 2. Include all service-specific compose files
+include:
+  - ./anchors.yml                  # Must be included before services use it
+  - ./watchtower/compose.yml
+  - ./qbittorrent/compose.yml
+  - ./sonarr/compose.yml
+  - ./radarr/compose.yml
+  - ./lidarr/compose.yml
+  - ./prowlarr/compose.yml
+  - ./jellyfin/compose.yml
+  - ./mariadb/compose.yml
+  - ./homepage/compose.yml
+  - ./librespeed/compose.yml
+  - ./nginx-proxy/compose.yml
+
+# --- SHARED DATA VOLUME DEFINITIONS (Named volumes with driver_opts) ---
+volumes:
+# ... /media/data mount point (only used for servarr components) ...
+  media-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /media/data
+      o: bind
+# ... /media/data/torrents mount point (only used for qBittorent) ...
+  torrents-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /media/data/torrents
+      o: bind
+# ... /media/data/media mount point (only used for Jellyfin) ...
+  media-library:
+    driver: local
+    driver_opts:
+      type: none
+      device: /media/data/media
+      o: bind
+
+# --- NETWORK DEFINITIONS ---
+networks:
+# ... Main netowrk for most docker containers (all but mariadb use this network) ...
+  mediarr:
+    driver: bridge
+# ... mariadb network (used to isolate the database) ...
+  npm-backend:
+    driver: bridge

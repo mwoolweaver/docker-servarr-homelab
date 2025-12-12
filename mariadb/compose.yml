@@ -1,0 +1,25 @@
+services:
+  mariadb:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: mariadb
+    pull_policy: always
+    restart: unless-stopped
+    volumes:
+      - ./config:/config # Path adjusted
+    environment:
+      MARIADB_BIND_ADDRESS: 0.0.0.0
+      TZ: America/Chicago
+      MYSQL_ROOT_PASSWORD: ADD-YOUR-PASSWORD
+      MYSQL_DATABASE: speedtest_db
+      MYSQL_USER: mediarr
+      MYSQL_PASSWORD: ADD-YOUR-PASSWORD
+    networks:
+      - npm-backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      jellyfin:
+        condition: service_healthy

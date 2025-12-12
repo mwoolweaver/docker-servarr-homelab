@@ -1,0 +1,26 @@
+# Note: Watchtower does not use the default anchor
+services:
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: watchtower
+    pull_policy: always
+    restart: unless-stopped
+    networks:
+      - mediarr
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_HTTP_API_METRICS: true
+      WATCHTOWER_HTTP_API_TOKEN: ADD-YOUR-PASSWORD
+      WATCHTOWER_CLEANUP: true
+      WATCHTOWER_POLL_INTERVAL: 86400
+      TZ: America/Chicago
+    command:
+      qbittorrent
+      radarr
+      sonarr
+      lidarr
+      prowlarr
+      jellyfin
+      mariadb
+      nginx-proxy

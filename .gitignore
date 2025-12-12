@@ -1,0 +1,20 @@
+# Ignore everything first
+*
+
+# But don't ignore all directories themselves, so Git can traverse them
+!*/
+
+# Re-include the essential project files in the root directory
+!/anchors.yml
+!/compose.yml
+!/README.md
+!.gitignore
+!/create_docker_config_folder_structure.sh
+!/create_servarr_media_folder_structure.sh
+
+# Re-include all .gitkeep files found anywhere
+!.gitkeep
+
+# Re-include all files named 'compose.yml' inside any subdirectory
+!*/compose.yml
+

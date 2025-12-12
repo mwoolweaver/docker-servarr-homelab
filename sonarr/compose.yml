@@ -1,0 +1,23 @@
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:develop
+    container_name: sonarr
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: America/Chicago
+    networks:
+      - mediarr
+    volumes:
+      - media-root:/data
+      - ./config:/config # Path adjusted
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/127.0.0.1/8989 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      qbittorrent:
+        condition: service_healthy

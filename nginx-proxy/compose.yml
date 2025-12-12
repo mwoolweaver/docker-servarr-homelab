@@ -1,0 +1,31 @@
+services:
+  nginx-proxy:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      TZ: America/Chicago
+      DB_MYSQL_HOST: "mariadb"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_NAME: "proxy_db"
+      DB_MYSQL_USER: "proxy_user"
+      DB_MYSQL_PASSWORD: "ADD-YOUR-PASSWORD"
+    volumes:
+      - ./data:/data # Path adjusted (from ./nginx-proxy/data to ./data)
+      - ./letsencrypt:/etc/letsencrypt # Path adjusted
+      - ./website:/data/website # Path adjusted
+    networks:
+      - mediarr
+      - npm-backend
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      mariadb:
+        condition: service_healthy
